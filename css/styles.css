@@ -1,14 +1,29 @@
+@charset "UTF-8";
+/*共通
+ーーーーーーーーーーーーーーーーーーー*/
+html {
+    font-size: 100%;
+}
+/*見出し*/
+.font-english,.header,.footer{
+    font-family: "Mochiy Pop P One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.page-title{
+    padding: 5rem;
+}
 .body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
+    line-height: 2.5;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #fff4ff;
+    text-align: center;
 }
-
 .header {
-    background: #333;
-    color: #fff;
+    background: #ce9eff;
+    color: #fff4ff;
     padding: 1rem 0;
     text-align: center;
 }
@@ -24,18 +39,36 @@
 }
 
 .nav ul li a {
-    color: #fff;
+    color: #fff4ff;
     text-decoration: none;
+    font-size: 2.5rem;
+}
+
+.nav ul li a:hover {
+    color: #ffccff;
+}
+
+.about{
+    color: #bf7fff;
+    margin: 5rem;
+}
+
+.about h2 {
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+}
+.about p{
+    font-size: 3rem;
 }
 
 .footer {
     text-align: center;
-    padding: 3rem;
-    background: #333;
-    color: #fff;
-    position: fixed;
+    padding: 1.5rem;
+    background: #ce9eff;
+    color: #fff4ff;
     width: 100%;
-    bottom: 0;
+    font-size: 3rem;
+    
 }
 
 @media (max-width: 600px) {
