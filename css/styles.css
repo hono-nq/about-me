@@ -9,6 +9,7 @@ html {
     font-family: "Mochiy Pop P One", sans-serif;
     font-weight: 400;
     font-style: normal;
+    color: #ce9eff;
 }
 .page-title{
     padding: 5rem;
@@ -65,12 +66,13 @@ html {
     margin: 5rem;
 }
 
-.about h2 {
+.about h2 ,.hobbies h2 {
     font-size: 5rem;
     margin-bottom: 0.5rem;
 }
-.about p{
+.about p, .hobbies p{
     font-size: 3rem;
+    color: #ce9eff;
     border-color: #ce9eff;
     border-width: 10px;
     margin-bottom: 2rem;
@@ -115,11 +117,25 @@ html {
     object-fit: cover;
     border-radius: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
 .music-image:hover {
-    transform: scale(1.05);
+    transform: scale(1.2);
     box-shadow: 0 4px 15px rgba(206, 158, 255, 0.5);
+}
+
+.music-image:active {
+    transform: scale(1.15);
+    box-shadow: 0 8px 25px rgba(206, 158, 255, 0.8);
+}
+.music-item a {
+    text-decoration: none;
+    color: inherit;
+}
+.music-item a:active .music-image {
+    transform: scale(1.15);
+    box-shadow: 0 8px 25px rgba(206, 158, 255, 0.8);
 }
 
 .music-description {
@@ -128,7 +144,7 @@ html {
     color: #bf7fff;
 }
 
-/* お問い合わせフォームのスタイル */
+/* お問い合わせフォーム*/
 .contact-form {
     max-width: 600px;
     margin: 0 auto;
@@ -184,6 +200,82 @@ html {
 
 .submit-btn:hover {
     background-color: #bf7fff;
+}
+
+/* Hobbies ページのスタイル */
+.hobbies {
+    color: #bf7fff;
+    margin: 5rem;
+}
+
+.hobbies h2 {
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hobbies > p {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #bf7fff;
+}
+
+.hobby-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hobby-item {
+    background-color: #f0e6ff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(206, 158, 255, 0.3);
+    text-align: left;
+}
+
+.hobby-title {
+    font-size: 2.5rem;
+    color: #ce9eff;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.hobby-description {
+    font-size: 1.8rem;
+    color: #8a4fff;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+}
+
+.hobby-link {
+    display: inline-block;
+    color: #ce9eff;
+    text-decoration: none;
+    font-size: 1.6rem;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: 2px solid #ce9eff;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.hobby-link:hover {
+    background-color: #ce9eff;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.hobby-image {
+    width: 100%;
+    max-width: 600px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 1rem 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .footer {
