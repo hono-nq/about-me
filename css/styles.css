@@ -73,18 +73,30 @@ html {
     position: absolute;
     top: 1rem;
     right: 1rem;
+    transition: all 0.3s ease-in-out;
+    border-radius: 4px;
+    z-index: 1001;
 }
 
 .menu-toggle:hover {
     color: #ffccff;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.menu-toggle:active {
+    transform: scale(0.95);
 }
 
 .nav.mobile-menu-open ul {
     display: block;
 }
 
-.nav.mobile-menu-closed ul {
-    display: none;
+/* モバイル環境でのみ非表示にする */
+@media (max-width: 768px) {
+    .nav.mobile-menu-closed ul {
+        display: none;
+    }
 }
 
 /* 共通セクションスタイル */
@@ -183,6 +195,22 @@ html {
 }
 
 /* レスポンシブ対応 */
+/* PC版でナビゲーションを表示 */
+@media (min-width: 769px) {
+    .nav ul {
+        display: block;
+        position: static;
+        width: auto;
+        background: transparent;
+        box-shadow: none;
+        z-index: auto;
+    }
+    
+    .menu-toggle {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     .profile-container {
         flex-direction: column;
@@ -200,10 +228,10 @@ html {
     
     .header {
         position: relative;
+        /* overflow: hiddenを削除してメニューが表示されるようにする */
     }
     
     .nav ul {
-        display: none;
         position: absolute;
         top: 100%;
         left: 0;
@@ -211,11 +239,19 @@ html {
         background: #ce9eff;
         border-bottom: none;
         box-shadow: 0 2px 10px rgba(206, 158, 255, 0.3);
-        z-index: 1000;
+        z-index: 9999; /* より高いz-indexに変更 */
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+        opacity: 0;
+        transform: translateY(-10px);
     }
     
     .nav.mobile-menu-open ul {
-        display: block;
+        max-height: 400px !important; /* デフォルトの高さ */
+        min-height: 200px; /* 最小高さを保証 */
+        opacity: 1;
+        transform: translateY(0);
     }
     
     .nav ul li {
@@ -224,6 +260,31 @@ html {
         border-right: none;
         border-bottom: 1px solid rgba(255, 244, 255, 0.3);
         padding: 0;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        transition-delay: 0.1s;
+    }
+    
+    .nav.mobile-menu-open ul li {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .nav ul li:nth-child(1) {
+        transition-delay: 0.1s;
+    }
+    
+    .nav ul li:nth-child(2) {
+        transition-delay: 0.15s;
+    }
+    
+    .nav ul li:nth-child(3) {
+        transition-delay: 0.2s;
+    }
+    
+    .nav ul li:nth-child(4) {
+        transition-delay: 0.25s;
     }
     
     .nav ul li:last-child {
@@ -235,6 +296,7 @@ html {
         padding: 1rem;
         font-size: 1.8rem;
         border-radius: 0;
+        transition: background-color 0.2s ease-in-out;
     }
     
     .nav ul li a:hover {

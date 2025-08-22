@@ -105,39 +105,162 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// ハンバーガーメニューの機能
+// ハンバーガーメニューの機能（アニメーション対応）
 function toggleMobileMenu() {
     const nav = document.getElementById('nav');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navUl = nav.querySelector('ul');
     
     if (nav.classList.contains('mobile-menu-open')) {
+        // メニューを閉じる
         nav.classList.remove('mobile-menu-open');
         nav.classList.add('mobile-menu-closed');
+        menuToggle.innerHTML = '☰'; // ハンバーガーアイコンに戻す
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'メニューを開く');
+        
+        // max-heightを0に戻す
+        navUl.style.setProperty('max-height', '0px', 'important');
+        
+        // アニメーション完了後にフォーカスをボタンに戻す
+        setTimeout(() => {
+            menuToggle.focus();
+        }, 400);
     } else {
+        // メニューを開く
         nav.classList.remove('mobile-menu-closed');
         nav.classList.add('mobile-menu-open');
+        menuToggle.innerHTML = '✕'; // 閉じるアイコンに変更
+        menuToggle.setAttribute('aria-expanded', 'true');
+        menuToggle.setAttribute('aria-label', 'メニューを閉じる');
+        
+        // 実際のコンテンツの高さを計算して設定
+        // 一時的にクラスを使って高さを測定
+        nav.classList.add('mobile-menu-open');
+        const actualHeight = navUl.scrollHeight;
+        nav.classList.remove('mobile-menu-open');
+        
+        // メニューを開く
+        nav.classList.add('mobile-menu-open');
+        // インラインスタイルで確実に高さを設定
+        navUl.style.setProperty('max-height', (actualHeight + 20) + 'px', 'important');
+        
+        // アニメーション完了後に最初のメニュー項目にフォーカス
+        setTimeout(() => {
+            const firstMenuItem = nav.querySelector('ul li:first-child a');
+            if (firstMenuItem) {
+                firstMenuItem.focus();
+            }
+        }, 400);
     }
 }
 
-// ページ読み込み時にメニューを閉じた状態にする
+// ページ読み込み時にモバイル環境のみメニューを閉じた状態にする
 document.addEventListener('DOMContentLoaded', function() {
     const nav = document.getElementById('nav');
     if (nav) {
-        nav.classList.add('mobile-menu-closed');
+        const navUl = nav.querySelector('ul');
+        
+        // モバイル環境の場合のみクラスを追加
+        if (window.innerWidth <= 768) {
+            nav.classList.add('mobile-menu-closed');
+            navUl.style.setProperty('max-height', '0px', 'important');
+        }
     }
+    
+    // ウィンドウサイズ変更時の処理
+    window.addEventListener('resize', function() {
+        const navUl = nav.querySelector('ul');
+        const menuToggle = document.querySelector('.menu-toggle');
+        
+        if (window.innerWidth > 768) {
+            // PC版ではモバイルメニュー関連のクラスを削除
+            nav.classList.remove('mobile-menu-open', 'mobile-menu-closed');
+            navUl.style.removeProperty('max-height'); // PC版では高さ制限なし
+            if (menuToggle) {
+                menuToggle.innerHTML = '☰';
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+        } else {
+            // モバイル版では閉じた状態にする
+            nav.classList.remove('mobile-menu-open');
+            nav.classList.add('mobile-menu-closed');
+            navUl.style.setProperty('max-height', '0px', 'important');
+            if (menuToggle) {
+                menuToggle.innerHTML = '☰';
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.setAttribute('aria-label', 'メニューを開く');
+            }
+        }
+    });
 });
 
-// メニューリンクをクリックした時にメニューを閉じる
+// 背景クリックでメニューを閉じる機能
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('click', function(event) {
+        const nav = document.getElementById('nav');
+        const menuToggle = document.querySelector('.menu-toggle');
+        
+        // モバイルメニューが開いている場合のみ処理
+        if (nav && nav.classList.contains('mobile-menu-open')) {
+            // クリックされた要素がメニュー内部でもハンバーガーボタンでもない場合
+            if (!nav.contains(event.target) && !menuToggle.contains(event.target)) {
+                const navUl = nav.querySelector('ul');
+                nav.classList.remove('mobile-menu-open');
+                nav.classList.add('mobile-menu-closed');
+                navUl.style.setProperty('max-height', '0px', 'important'); // 高さをリセット
+                menuToggle.innerHTML = '☰';
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.setAttribute('aria-label', 'メニューを開く');
+            }
+        }
+    });
+});
+
+// メニューリンクをクリックした時にメニューを閉じる（アニメーション対応）
 document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav ul li a');
     
     navLinks.forEach(function(link) {
         link.addEventListener('click', function() {
             const nav = document.getElementById('nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
             if (nav && nav.classList.contains('mobile-menu-open')) {
+                const navUl = nav.querySelector('ul');
                 nav.classList.remove('mobile-menu-open');
                 nav.classList.add('mobile-menu-closed');
+                navUl.style.setProperty('max-height', '0px', 'important'); // 高さをリセット
+                
+                // ハンバーガーアイコンを元に戻す
+                if (menuToggle) {
+                    menuToggle.innerHTML = '☰';
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.setAttribute('aria-label', 'メニューを開く');
+                }
             }
         });
+    });
+});
+
+// ESCキーでメニューを閉じる機能
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const nav = document.getElementById('nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (nav && nav.classList.contains('mobile-menu-open')) {
+                const navUl = nav.querySelector('ul');
+                nav.classList.remove('mobile-menu-open');
+                nav.classList.add('mobile-menu-closed');
+                navUl.style.setProperty('max-height', '0px', 'important'); // 高さをリセット
+                menuToggle.innerHTML = '☰';
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.setAttribute('aria-label', 'メニューを開く');
+                menuToggle.focus(); // フォーカスをボタンに戻す
+            }
+        }
     });
 });
 
