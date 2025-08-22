@@ -1,4 +1,19 @@
 @charset "UTF-8";
+
+/* CSS変数定義 */
+:root {
+    --primary-color: #ce9eff;
+    --secondary-color: #fff4ff;
+    --accent-color: #ffccff;
+    --text-color: #bf7fff;
+    --transition-duration: 0.3s;
+    --mobile-breakpoint: 768px;
+    --z-index-menu: 9999;
+    --z-index-toggle: 1001;
+    --border-radius: 4px;
+    --box-shadow: 0 2px 10px rgba(206, 158, 255, 0.3);
+}
+
 /*共通
 ーーーーーーーーーーーーーーーーーーー*/
 html {
@@ -194,6 +209,124 @@ html {
     margin-bottom: 1.5rem;
 }
 
+/* 画像スライダー */
+.slider-container {
+    position: relative;
+    max-width: 600px;
+    margin: 2rem auto;
+    background: transparent; /* 背景を透明に */
+    border-radius: var(--border-radius);
+    box-shadow: none; /* シャドウを削除 */
+    overflow: hidden;
+}
+
+.slider {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent; /* 背景を透明に */
+    cursor: pointer;
+    z-index: 1;
+}
+
+.slide.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+/* 全てのスライドに対してホバー効果を適用 */
+.slide:hover {
+    opacity: 1 !important; /* ホバー時は非アクティブでも表示 */
+    z-index: 5; /* 他のスライドより前面に表示 */
+}
+
+.slide img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* coverからcontainに変更して画像全体を表示 */
+    border-radius: var(--border-radius);
+    background: transparent;
+    filter: drop-shadow(0 4px 8px rgba(206, 158, 255, 0.3));
+    transition: transform 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
+    opacity: 0.7;
+}
+
+.slide img:hover {
+    transform: scale(1.02);
+    filter: drop-shadow(0 6px 12px rgba(206, 158, 255, 0.4));
+    opacity: 1; /* ホバー時は完全に不透明に */
+}
+
+/* スライダーボタン */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(206, 158, 255, 0.8);
+    color: var(--secondary-color);
+    border: none;
+    padding: 0.5rem 0.8rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: background var(--transition-duration);
+    z-index: 10;
+}
+
+.slider-btn:hover {
+    background: var(--primary-color);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.slider-btn-prev {
+    left: 1rem;
+}
+
+.slider-btn-next {
+    right: 1rem;
+}
+
+/* スライダードット */
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: transparent; /* 背景を透明に */
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(206, 158, 255, 0.5);
+    cursor: pointer;
+    transition: background var(--transition-duration);
+}
+
+.dot.active {
+    background: var(--primary-color);
+}
+
+.dot:hover {
+    background: var(--accent-color);
+}
+
 /* レスポンシブ対応 */
 /* PC版でナビゲーションを表示 */
 @media (min-width: 769px) {
@@ -221,6 +354,29 @@ html {
         justify-content: center;
     }
     
+    /* スライダーのモバイル対応 */
+    .slider-container {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+    
+    .slider {
+        height: 250px;
+    }
+    
+    .slider-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 1.2rem;
+    }
+    
+    .slider-btn-prev {
+        left: 0.5rem;
+    }
+    
+    .slider-btn-next {
+        right: 0.5rem;
+    }
+    
     /* ハンバーガーメニューを表示 */
     .menu-toggle {
         display: block;
@@ -228,7 +384,6 @@ html {
     
     .header {
         position: relative;
-        /* overflow: hiddenを削除してメニューが表示されるようにする */
     }
     
     .nav ul {
@@ -239,7 +394,7 @@ html {
         background: #ce9eff;
         border-bottom: none;
         box-shadow: 0 2px 10px rgba(206, 158, 255, 0.3);
-        z-index: 9999; /* より高いz-indexに変更 */
+        z-index: 9999;
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
@@ -248,8 +403,8 @@ html {
     }
     
     .nav.mobile-menu-open ul {
-        max-height: 400px !important; /* デフォルトの高さ */
-        min-height: 200px; /* 最小高さを保証 */
+        max-height: 400px !important; 
+        min-height: 200px; 
         opacity: 1;
         transform: translateY(0);
     }
@@ -303,7 +458,6 @@ html {
         background-color: rgba(255, 255, 255, 0.1);
     }
     
-    /* モバイル用タッチ対応 - 長押しで説明文表示 */
     .music-item {
         touch-action: manipulation;
     }

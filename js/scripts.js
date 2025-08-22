@@ -105,11 +105,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// 定数定義
+const MOBILE_BREAKPOINT = 768;
+const ANIMATION_DURATION = 400;
+const HEIGHT_PADDING = 20;
+
 // ハンバーガーメニューの機能（アニメーション対応）
 function toggleMobileMenu() {
     const nav = document.getElementById('nav');
     const menuToggle = document.querySelector('.menu-toggle');
+    
+    // 必要な要素の存在確認
+    if (!nav || !menuToggle) {
+        console.warn('Navigation elements not found');
+        return;
+    }
+    
     const navUl = nav.querySelector('ul');
+    if (!navUl) {
+        console.warn('Navigation ul element not found');
+        return;
+    }
     
     if (nav.classList.contains('mobile-menu-open')) {
         // メニューを閉じる
@@ -125,7 +141,7 @@ function toggleMobileMenu() {
         // アニメーション完了後にフォーカスをボタンに戻す
         setTimeout(() => {
             menuToggle.focus();
-        }, 400);
+        }, ANIMATION_DURATION);
     } else {
         // メニューを開く
         nav.classList.remove('mobile-menu-closed');
@@ -135,15 +151,12 @@ function toggleMobileMenu() {
         menuToggle.setAttribute('aria-label', 'メニューを閉じる');
         
         // 実際のコンテンツの高さを計算して設定
-        // 一時的にクラスを使って高さを測定
-        nav.classList.add('mobile-menu-open');
         const actualHeight = navUl.scrollHeight;
-        nav.classList.remove('mobile-menu-open');
         
         // メニューを開く
         nav.classList.add('mobile-menu-open');
         // インラインスタイルで確実に高さを設定
-        navUl.style.setProperty('max-height', (actualHeight + 20) + 'px', 'important');
+        navUl.style.setProperty('max-height', (actualHeight + HEIGHT_PADDING) + 'px', 'important');
         
         // アニメーション完了後に最初のメニュー項目にフォーカス
         setTimeout(() => {
@@ -151,18 +164,35 @@ function toggleMobileMenu() {
             if (firstMenuItem) {
                 firstMenuItem.focus();
             }
-        }, 400);
+        }, ANIMATION_DURATION);
     }
+}
+
+// ユーティリティ関数
+function closeMenu(nav, navUl, menuToggle) {
+    nav.classList.remove('mobile-menu-open');
+    nav.classList.add('mobile-menu-closed');
+    navUl.style.setProperty('max-height', '0px', 'important');
+    menuToggle.innerHTML = '☰';
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'メニューを開く');
 }
 
 // ページ読み込み時にモバイル環境のみメニューを閉じた状態にする
 document.addEventListener('DOMContentLoaded', function() {
     const nav = document.getElementById('nav');
+    const menuToggle = document.querySelector('.menu-toggle');
+    
+    // ハンバーガーメニューのイベントリスナーを追加
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMobileMenu);
+    }
+    
     if (nav) {
         const navUl = nav.querySelector('ul');
         
         // モバイル環境の場合のみクラスを追加
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= MOBILE_BREAKPOINT) {
             nav.classList.add('mobile-menu-closed');
             navUl.style.setProperty('max-height', '0px', 'important');
         }
@@ -173,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const navUl = nav.querySelector('ul');
         const menuToggle = document.querySelector('.menu-toggle');
         
-        if (window.innerWidth > 768) {
+        if (window.innerWidth > MOBILE_BREAKPOINT) {
             // PC版ではモバイルメニュー関連のクラスを削除
             nav.classList.remove('mobile-menu-open', 'mobile-menu-closed');
             navUl.style.removeProperty('max-height'); // PC版では高さ制限なし
@@ -312,4 +342,129 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         });
     });
+});
+
+// 画像スライダー機能
+document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.querySelector('.slider');
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.querySelector('.slider-btn-prev');
+    const nextBtn = document.querySelector('.slider-btn-next');
+    
+    if (!slider || slides.length === 0) return;
+    
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    
+    // スライドを表示する関数
+    function showSlide(index) {
+        // 現在のアクティブクラスを削除
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+        
+        // 新しいスライドをアクティブに
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        
+        currentSlide = index;
+    }
+    
+    // 次のスライドに移動
+    function nextSlide() {
+        const next = (currentSlide + 1) % totalSlides;
+        showSlide(next);
+    }
+    
+    // 前のスライドに移動
+    function prevSlide() {
+        const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(prev);
+    }
+    
+    // イベントリスナーの追加
+    if (nextBtn) {
+        nextBtn.addEventListener('click', nextSlide);
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', prevSlide);
+    }
+    
+    // ドットクリックイベント
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => showSlide(index));
+    });
+    
+    // 自動スライドショー（5秒間隔）
+    let autoSlideInterval = setInterval(nextSlide, 5000);
+    
+    // ホバー時に自動スライドを停止
+    slider.addEventListener('mouseenter', () => {
+        clearInterval(autoSlideInterval);
+    });
+    
+    // ホバー終了時に自動スライドを再開
+    slider.addEventListener('mouseleave', () => {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+    });
+    
+    // 各スライドに個別のホバー効果を追加
+    slides.forEach((slide, index) => {
+        slide.addEventListener('mouseenter', () => {
+            // ホバーされたスライドを一時的に表示
+            if (!slide.classList.contains('active')) {
+                slide.style.opacity = '0.8';
+                slide.style.zIndex = '5';
+            }
+        });
+        
+        slide.addEventListener('mouseleave', () => {
+            // アクティブでないスライドは元に戻す
+            if (!slide.classList.contains('active')) {
+                slide.style.opacity = '0';
+                slide.style.zIndex = '1';
+            }
+        });
+        
+        // スライドをクリックしたときにそのスライドをアクティブにする
+        slide.addEventListener('click', () => {
+            showSlide(index);
+        });
+    });
+    
+    // キーボードナビゲーション
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            prevSlide();
+        } else if (e.key === 'ArrowRight') {
+            nextSlide();
+        }
+    });
+    
+    // タッチイベント（スワイプ）対応
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    slider.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    slider.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                nextSlide(); // 左スワイプで次へ
+            } else {
+                prevSlide(); // 右スワイプで前へ
+            }
+        }
+    }
 });

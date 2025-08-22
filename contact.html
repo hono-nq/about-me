@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About me</title>
+    <title>Contact - About me</title>
     <!-- reset.css ress -->
     <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css" />
     <!-- Google font-->
@@ -15,13 +15,13 @@
 </head>
 <body class="body">
     <header class="header">
-        <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav">☰</button>
+        <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav">☰</button>
         <nav class="nav" id="nav" role="navigation" aria-label="メインナビゲーション">
             <ul>
-                <li><a href=index.html>Home</a></li>
-                <li><a href=hobbies.html>Hobbies</a></li>
-                <li><a href=music.html>Music</a></li>
-                <li><a href=contact.html>Contact</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="hobbies.html">Hobbies</a></li>
+                <li><a href="music.html">Music</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
         <h1>About Me</h1>
@@ -32,15 +32,17 @@
         <p>お問い合わせはこちらから！</p>
         
         <!-- お問い合わせフォーム -->
-        <form class="contact-form" action="https://example.com/submit" method="POST">
+        <form class="contact-form" action="#" method="POST" novalidate>
             <div class="form-group">
-                <label for="name">お名前 <span class="required">*</span></label>
-                <input type="text" id="name" name="name" required>
+                <label for="name">お名前 <span class="required" aria-label="必須項目">*</span></label>
+                <input type="text" id="name" name="name" required aria-describedby="name-error">
+                <div id="name-error" class="error-message" role="alert"></div>
             </div>
             
             <div class="form-group">
-                <label for="email">メールアドレス <span class="required">*</span></label>
-                <input type="email" id="email" name="email" required>
+                <label for="email">メールアドレス <span class="required" aria-label="必須項目">*</span></label>
+                <input type="email" id="email" name="email" required aria-describedby="email-error">
+                <div id="email-error" class="error-message" role="alert"></div>
             </div>
             
             <div class="form-group">
@@ -49,8 +51,9 @@
             </div>
             
             <div class="form-group">
-                <label for="message">メッセージ <span class="required">*</span></label>
-                <textarea id="message" name="message" rows="6" required></textarea>
+                <label for="message">メッセージ <span class="required" aria-label="必須項目">*</span></label>
+                <textarea id="message" name="message" rows="6" required aria-describedby="message-error"></textarea>
+                <div id="message-error" class="error-message" role="alert"></div>
             </div>
             
             <button type="submit" class="submit-btn">送信</button>
