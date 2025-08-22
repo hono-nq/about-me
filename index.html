@@ -15,7 +15,8 @@
 </head>
 <body class="body">
     <header class="header">
-        <nav class="nav">
+        <button class="menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        <nav class="nav" id="nav">
             <ul>
                 <li><a href=index.html>Home</a></li>
                 <li><a href=hobbies.html>Hobbies</a></li>
@@ -28,10 +29,28 @@
     <!--メインコンテンツ-->
     <section class="about">
         <h2 class="font-english">Profile</h2>
-        <p>吉竹 穂乃佳</p>
-        <p>2006年10月18日生まれ</p>
-        <p>兵庫県出身</p>
-        <p>ホワイトハッカー専攻１年</p>
+        <div class="profile-container">
+            <div class="profile-item">
+                <h3>Name</h3>
+                <p>吉竹　穂乃佳</p>
+            </div>
+            <div class="profile-item">
+                <h3>Major</h3>
+                <p>ホワイトハッカー専攻</p>
+            </div>
+            <div class="profile-item">
+                <h3>From</h3>
+                <p>兵庫県</p>
+            </div>
+            <div class="profile-item">
+                <h3>MBTI</h3>
+                <p>ENFP</p>
+            </div>
+            <div class="profile-item">
+                <h3>Instagram</h3>
+                <p><a href="https://www.instagram.com/hono.nq/profilecard/?igsh=ZXpsdHZsaW04bTZu" target="_blank">@hono.nq</a></p>
+            </div>
+        </div>
     </section>
     <!--フッター-->     
     <footer class="footer">

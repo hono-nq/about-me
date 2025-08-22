@@ -15,7 +15,8 @@
 </head>
 <body class="body">
     <header class="header">
-        <nav class="nav">
+        <button class="menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        <nav class="nav" id="nav">
             <ul>
                 <li><a href=index.html>Home</a></li>
                 <li><a href=hobbies.html>Hobbies</a></li>
@@ -31,7 +32,7 @@
         <p></p>
         
         <!-- 趣味リスト -->
-        <class="hobby-list">
+        <div class="hobby-list">
             <div class="hobby-item">
                 <h3 class="hobby-title">配信をみる</h3>
                 <img src="image\20200919193725.jpg" alt="配信をみる" class="hobby-image">
@@ -43,14 +44,6 @@
                 <img src="image\Logo-Tokyo-Disney-Resort-1.jpg" alt="ディズニー" class="hobby-image">
                 <a href="disney.html" class="hobby-link">MORE →</a>
             </div>
-            
-            <div class="hobby-item">
-                <h3 class="hobby-title">Netflix</h3>
-                <img src="image\netflix-logo.avif" alt="配信をみる" class="hobby-image">
-                <a href="netflix.html" class="hobby-link">MORE →</a>
-            </div>
-        </div>
-        
     </section>
     <!--フッター-->     
     <footer class="footer">

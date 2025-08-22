@@ -15,7 +15,8 @@
 </head>
 <body class="body">
     <header class="header">
-        <nav class="nav">
+        <button class="menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        <nav class="nav" id="nav">
             <ul>
                 <li><a href=index.html>Home</a></li>
                 <li><a href=hobbies.html>Hobbies</a></li>
@@ -26,8 +27,36 @@
         <h1>About Me</h1>
     </header>
     <!--メインコンテンツ-->
-
+    <section class="about">
+        <h2 class="font-english">Streaming</h2>
+        <p>ゲーム配信見るのすきです<br>
+        最推しはなるせです</p>
         
+        <!-- ゲーム関連の画像リンク -->
+        <div class="music-links">
+            <div class="music-item">
+                <p class="game-description">なるせ</p>
+                <a href="https://www.youtube.com/@nqrse" target="_blank">
+                    <img src="image\nqrse.webp" alt="なるせ" class="music-image">
+                </a>
+            </div>
+            
+            <div class="music-item">
+                <p class="game-description">だるまいずごっと</p>
+                <a href="https://www.youtube.com/@darumaisgod" target="_blank">
+                    <img src="image\FUeVUURVIAAouYO.jpg" alt="だるまいずごっと" class="music-image">
+                </a>
+            </div>
+            
+            <div class="music-item">
+                <p class="game-description">らっだぁ</p>
+                <a href="https://www.youtube.com/@radaooo" target="_blank">
+                    <img src="image\ra.jpg" alt="らっだぁ" class="music-image">
+                </a>
+            </div>
+        </div>
+        
+    </section>
     <!--フッター-->     
     <footer class="footer">
         <p>&copy; 2025 about me</p>
