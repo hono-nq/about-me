@@ -787,6 +787,12 @@ html {
     z-index: 1;
 }
 
+/* ホバー時にほんの少し拡大（フルスクリーン時は除外） */
+.disney-image:not(.fullscreen):hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(206, 158, 255, 0.5);
+}
+
 .disney-image.fullscreen {
     position: fixed;
     top: 50%;
@@ -802,18 +808,6 @@ html {
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
 }
 
-.disney-image.fullscreen::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    pointer-events: none;
-}
-
 .disney-overlay {
     position: fixed;
     top: 0;
@@ -824,36 +818,34 @@ html {
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.5s ease;
-    pointer-events: none;
+    pointer-events: none; /* 通常は無効 */
 }
 
 .disney-overlay.show {
     opacity: 1;
+    pointer-events: auto; /* 表示時のみクリック可能に */
 }
 
 .disney-text.show-text {
     position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1001;
-    padding: 2rem;
-    border-radius: 15px;
-    max-width: 350px;
-    transition: all 0.5s ease;
-    color: white;
+    left: 50%;
+    transform: translate(-50%, -100%); /* 下端基準で安定配置 */
+    z-index: 1002; /* 画像(1001)より前面に */
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+    max-width: 90vw;
+    transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    font-size: 1.4rem;
 }
 
 .disney-text.show-text p {
     color: white;
 }
 
-.disney-item:nth-child(odd) .disney-text.show-text {
-    left: 2rem;
-}
-
-.disney-item:nth-child(even) .disney-text.show-text {
-    right: 2rem;
-}
+/* 位置はJSで計算して適用するため、odd/evenの左右固定は廃止 */
 
 .disney-text {
     flex: 1;
@@ -892,27 +884,7 @@ html {
         height: 200px;
     }
     
-    /* モバイル版でのディズニーテキスト表示を画面下部に */
-    .disney-text.show-text {
-        position: fixed;
-        top: auto;
-        bottom: 2rem;
-        left: 1rem;
-        right: 1rem;
-        transform: none;
-        max-width: none;
-        width: auto;
-        background-color: transparent;
-        backdrop-filter: none;
-        box-shadow: none;
-        z-index: 1001;
-    }
-    
-    .disney-item:nth-child(odd) .disney-text.show-text,
-    .disney-item:nth-child(even) .disney-text.show-text {
-        left: 1rem;
-        right: 1rem;
-    }
+    /* テキスト位置はJSで算出するため、モバイルでも上書きしない */
 }
 
 .hobby-item {
@@ -1017,11 +989,9 @@ html {
     
     /* 小さなスマートフォンでのディズニーテキスト調整 */
     .disney-text.show-text {
-        bottom: 1rem;
-        left: 0.5rem;
-        right: 0.5rem;
-        padding: 1.5rem;
-        font-size: 0.9rem;
+    /* 位置はJSで制御するため、bottom/left/rightの固定指定はしない */
+    padding: 1.2rem;
+    font-size: 1.1rem;
     }
     
     .disney-text.show-text h3 {

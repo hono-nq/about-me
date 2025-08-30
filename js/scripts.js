@@ -1,108 +1,139 @@
-// Disney画像のホバー効果（5秒継続）
+// Disney画像の拡大表示：ホバーではなくクリック/タップでトグル
 document.addEventListener('DOMContentLoaded', function() {
     const disneyImages = document.querySelectorAll('.disney-image');
-    let activeTimeout = null;
-    let cooldownTimeout = null;
-    let isInCooldown = false;
-    let isEffectActive = false;
     let overlay = null;
-    
-    // オーバーレイ要素を作成
-    function createOverlay() {
+    let activeImage = null;
+    let activeText = null;
+
+    function ensureOverlay() {
         if (!overlay) {
             overlay = document.createElement('div');
             overlay.className = 'disney-overlay';
             document.body.appendChild(overlay);
+            // オーバーレイクリックで閉じる
+            overlay.addEventListener('click', closeActive);
         }
         return overlay;
     }
-    
+
+    function open(image, text) {
+    ensureOverlay().classList.add('show');
+    document.body.style.overflow = 'hidden';
+    image.classList.add('fullscreen');
+    text.classList.add('show-text');
+    positionTextBelowImage(image, text);
+    activeImage = image;
+    activeText = text;
+        // ESCキーで閉じる
+        document.addEventListener('keydown', onKeydown);
+
+        // 画像のトランジション完了後に再配置（サイズ確定のため）
+        const onTransitionEnd = (e) => {
+            if (e.target === image) {
+                positionTextBelowImage(image, text);
+                image.removeEventListener('transitionend', onTransitionEnd);
+            }
+        };
+        image.addEventListener('transitionend', onTransitionEnd);
+
+        // レイアウト確定待ちで数回再配置（端末差吸収）
+        requestAnimationFrame(() => {
+            positionTextBelowImage(image, text);
+            requestAnimationFrame(() => {
+                positionTextBelowImage(image, text);
+            });
+        });
+        setTimeout(() => positionTextBelowImage(image, text), 300);
+
+        // 画像が未ロードのときはロード完了後にも再配置
+        if (!image.complete || image.naturalWidth === 0) {
+            const onLoad = () => {
+                positionTextBelowImage(image, text);
+                image.removeEventListener('load', onLoad);
+            };
+            image.addEventListener('load', onLoad, { once: true });
+        }
+    }
+
+    function closeActive() {
+        if (!activeImage) return;
+        activeImage.classList.remove('fullscreen');
+        if (activeText) activeText.classList.remove('show-text');
+        if (overlay) overlay.classList.remove('show');
+        document.body.style.overflow = '';
+        activeImage = null;
+        activeText = null;
+        document.removeEventListener('keydown', onKeydown);
+    window.removeEventListener('resize', onResizeOrScroll);
+    window.removeEventListener('scroll', onResizeOrScroll, true);
+    }
+
+    function onKeydown(e) {
+        if (e.key === 'Escape') {
+            closeActive();
+        }
+    }
+
     disneyImages.forEach(function(image) {
         const disneyItem = image.closest('.disney-item');
-        const disneyText = disneyItem.querySelector('.disney-text');
-        
-        image.addEventListener('mouseenter', function() {
-            // クールダウン中または効果実行中は効果を発動しない
-            if (isInCooldown || isEffectActive) {
-                return;
+        // 同一カード内の最初のテキストを取得
+        const disneyText = disneyItem ? disneyItem.querySelector(':scope > .disney-text') || disneyItem.querySelector('.disney-text') : null;
+        if (!disneyText) return;
+
+        // クリックでトグル
+        image.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (activeImage === image) {
+                closeActive();
+            } else {
+                // 既に別の画像が開いていれば閉じる
+                if (activeImage) closeActive();
+                open(image, disneyText);
+                window.addEventListener('resize', onResizeOrScroll);
+                window.addEventListener('scroll', onResizeOrScroll, true);
             }
-            
-            // 既存のタイムアウトをクリア
-            if (activeTimeout) {
-                clearTimeout(activeTimeout);
-            }
-            
-            // 効果が実行中であることを示すフラグを設定
-            isEffectActive = true;
-            
-            // オーバーレイを作成・表示
-            const currentOverlay = createOverlay();
-            currentOverlay.classList.add('show');
-            
-            // 全画面表示を開始
-            image.classList.add('fullscreen');
-            disneyText.classList.add('show-text');
-            
-            // 1.5秒後に効果を終了
-            activeTimeout = setTimeout(function() {
-                image.classList.remove('fullscreen');
-                disneyText.classList.remove('show-text');
-                currentOverlay.classList.remove('show');
-                activeTimeout = null;
-                isEffectActive = false;
-                
-                // クールダウン期間を開始（1秒間）
-                isInCooldown = true;
-                cooldownTimeout = setTimeout(function() {
-                    isInCooldown = false;
-                    cooldownTimeout = null;
-                }, 1000);
-            }, 1500);
         });
-        
-        // マウスが離れても1.5秒間は継続（途中で終了させない）
-        image.addEventListener('mouseleave', function() {
-            // マウスが離れてもタイムアウトは継続
-        });
-        
-        // モバイル用のタッチイベント
+
+        // タッチでも同様に動作（iOSなどでの挙動安定化）
         image.addEventListener('touchstart', function(e) {
-            // タッチ開始時も同様の処理
-            if (isInCooldown || isEffectActive) {
-                return;
-            }
-            
-            // 既存のタイムアウトをクリア
-            if (activeTimeout) {
-                clearTimeout(activeTimeout);
-                activeTimeout = null;
-            }
-            
-            // 効果を開始
-            isEffectActive = true;
-            image.classList.add('fullscreen');
-            disneyText.classList.add('show-text');
-            
-            const currentOverlay = createOverlay();
-            currentOverlay.classList.add('show');
-            
-            // 1.5秒後に効果を終了
-            activeTimeout = setTimeout(function() {
-                image.classList.remove('fullscreen');
-                disneyText.classList.remove('show-text');
-                currentOverlay.classList.remove('show');
-                activeTimeout = null;
-                isEffectActive = false;
-                
-                // クールダウン期間を開始（1秒間）
-                isInCooldown = true;
-                cooldownTimeout = setTimeout(function() {
-                    isInCooldown = false;
-                    cooldownTimeout = null;
-                }, 1000);
-            }, 1500);
+            // クリックの重複発火を避けるため、軽く止める
+            // ただしスクロールは阻害しない
         }, { passive: true });
     });
+
+    function positionTextBelowImage(image, text) {
+        const rect = image.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const vw = window.innerWidth;
+        const margin = 12;   // 画像内の下端からの余白
+        const paddingX = 12; // テキスト左右の余白を考慮
+        const safety = 8;    // 画面端の安全余白
+
+        // テキストの最大幅を画像幅に収める
+        const maxW = Math.max(100, Math.min(rect.width - paddingX * 2, vw - safety * 2));
+        text.style.maxWidth = `${maxW}px`;
+
+        // いったん中央に置いてサイズ取得
+        const centerX = rect.left + rect.width / 2;
+        text.style.left = `${centerX}px`;
+        // transform: translate(-50%, -100%) を前提に、下端基準でtopを設定
+        text.style.top = `${rect.bottom - margin}px`;
+
+        const textRect = text.getBoundingClientRect();
+        // 画面外（上）に出る場合のみ、最小位置まで下げる
+        let baseTop = rect.bottom - margin;
+        if (baseTop - textRect.height < safety) {
+            baseTop = textRect.height + safety; // これで translate(-100%) 適用後も上端に収まる
+        }
+        text.style.top = `${baseTop}px`;
+        text.style.left = `${centerX}px`;
+    }
+
+    function onResizeOrScroll() {
+        if (activeImage && activeText) {
+            positionTextBelowImage(activeImage, activeText);
+        }
+    }
 });
 
 // 定数定義
